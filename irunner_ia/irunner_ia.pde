@@ -2,16 +2,14 @@ import gifAnimation.*;
 import processing.video.*;
 
 
-PImage bg2, coin, pipe, ground, ground2;
-PImage bg, flyright, flyleft, fastleft, fastleft2;
-PImage fastleft3, fastright, fastright2, fastright3;
-PImage rightup, leftup, leftjump, rightjump, leftfall, rightfall;
-PImage duckleft, duckright,marioleft, mariowalkleft;
+PImage bg, ground, ground2;
 PImage pjWalk;
-PImage LtoR,RtoL;
 int PointsCounter = 0,LR =0,once=1,jumpon=0,jumptime=0,onejump=0, stime=0, i=0, j=0;
-float x=100, y=170, speed=0,slow = 0, jump, g=670;
+float x=100, y=140, speed=0,slow = 0, jump, g=670;
 int n=415, contador=0;
+
+int savedTime;
+int totalTime = 50;
 
 
 boolean keyup = false;
@@ -21,21 +19,36 @@ boolean keydown = false;
 boolean keyuplook = false;
 boolean keyfast = false;
 Gif walkr, background;
-
+boolean[] suelo;
 
 void setup()
 {
-  size(600,300);
+  size(600,270);
 
    bg = loadImage("bg.png");
-   ground = loadImage("ground.png");
+   ground = loadImage("groundL.jpg");
    ground2 = loadImage("ground2.png");
    walkr = new Gif(this, "walkr.gif");
    walkr.play();
    background = new Gif(this, "background.gif");
    background.play();
    
+   suelo = new boolean[44];
+   initializeGround();
    background(250);
+   
+   suelo[21] = false;
+   suelo[22] = false;
+   suelo[23] = false;
+   suelo[24] = false;
+   suelo[25] = false;
+   suelo[26] = false;
+   suelo[27] = false;
+   suelo[28] = false;
+   suelo[29] = false;
+  suelo[30] = false;
+  
+  savedTime = millis();
    
 }
 
@@ -43,24 +56,51 @@ void draw()
 {
   //background(250);
   paint(); 
+   int passedTime = millis() - savedTime;
+  // Has five seconds passed?
+  if (passedTime > totalTime) {
+  moveGround();
+  savedTime = millis();
+  }
   drawGround();
   
 }
 
+void moveGround()
+{
+  boolean[] aux = suelo;
+  for(i = 0; i < suelo.length; i++)
+  {
+    if(i == 43)
+    {
+      suelo[i] = aux[0];
+    }
+    else{
+    suelo[i] = suelo[i+1];
+    }
+  }
+  
+}
+
+void initializeGround()
+{
+  for(i=0; i< suelo.length; i++)
+  {
+    suelo[i] = true;
+  }
+}
 
 void drawGround()
 {
+  int con = 0;
   for(i=0;i<700;i+=16)
-    {
-      image(ground,i,235);
-    }
-    for(i=0;i<700;i+=16)
-    {
-      for(j = 16; j<50; j+=16)
+  {
+      if(suelo[con] == true)
       {
-        image(ground2,i,235+j);
+        image(ground,i, 205);
       }
-    } 
+      con++;
+  }
 }
  
 void paint()
