@@ -11,6 +11,7 @@ int n=415, contador=0;
 int savedTime;
 int totalTime = 50;
 
+boolean dead = false;
 
 boolean keyup = false;
 boolean keyright = false;
@@ -28,7 +29,7 @@ void setup()
    bg = loadImage("bg.png");
    ground = loadImage("groundL.jpg");
    ground2 = loadImage("ground2.png");
-   walkr = new Gif(this, "walkr.gif");
+   walkr = new Gif(this, "p2.gif");
    walkr.play();
    background = new Gif(this, "background.gif");
    background.play();
@@ -108,8 +109,17 @@ void drawGround()
 void paint()
 {
   image(background,0,0);
-  if(suelo[7] == true)
+  if(suelo[7] == true && dead == false)
+  {
     image(walkr, x, y);
+  }
+  else
+  {
+    dead = true;
+    y++;
+    //PARAR CRONOMETRO
+    //PONER PANTALLA DE PUNTUACIONES
+  }
     textSize(30);
   text(contador++, width - (width/6), height/8);
   color(255,255,0);
