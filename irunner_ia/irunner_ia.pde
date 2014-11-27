@@ -23,7 +23,7 @@ boolean[] suelo;
 
 void setup()
 {
-  size(600,270);
+  size(600,240);
 
    bg = loadImage("bg.png");
    ground = loadImage("groundL.jpg");
@@ -46,7 +46,7 @@ void setup()
    suelo[27] = false;
    suelo[28] = false;
    suelo[29] = false;
-  suelo[30] = false;
+   suelo[30] = false;
   
   savedTime = millis();
    
@@ -54,10 +54,8 @@ void setup()
 
 void draw()
 {
-  //background(250);
   paint(); 
    int passedTime = millis() - savedTime;
-  // Has five seconds passed?
   if (passedTime > totalTime) {
   moveGround();
   savedTime = millis();
@@ -71,7 +69,11 @@ void moveGround()
   boolean[] aux = suelo;
   for(i = 0; i < suelo.length; i++)
   {
-    if(i == 43)
+    if(i == 42)
+    {
+      suelo[i] = true;
+    }
+    else if(i == 43)
     {
       suelo[i] = aux[0];
     }
@@ -106,9 +108,11 @@ void drawGround()
 void paint()
 {
   image(background,0,0);
-  image(walkr, x, y);
-  //text(contador++, width - (width/6), height/8);
-  //color(255,255,0);
+  if(suelo[7] == true)
+    image(walkr, x, y);
+    textSize(30);
+  text(contador++, width - (width/6), height/8);
+  color(255,255,0);
 }
  
  
