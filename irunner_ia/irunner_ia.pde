@@ -1,7 +1,6 @@
 import gifAnimation.*;
 import processing.video.*;
 
-
 PImage bg, ground, ground2, principal;
 PImage pjWalk;
 int PointsCounter = 0,LR =0,once=1,jumpon=0,jumptime=0,onejump=0, stime=0, i=0, j=0;
@@ -58,7 +57,7 @@ void setup()
    esquinaPlayX = 218;
    esquinaPlayY = 280;
    esquinaExitX = 484;
-   esquinaOptionsX = 218;
+   esquinaOptionsX = 45;
    esquinaOptionsY = 280;
    
    anchoBotones = 148;
@@ -74,12 +73,15 @@ void draw()
   case 1: 
     paintGame();
     break;
+  case 2:
+    drawCamera();
+    break;
   }
 }
 
+
 void pantallaPrincipal()
 {
-  
   image(principal, 0, 0);
 }
 
@@ -218,6 +220,11 @@ void paint()
  void keyPressed() {
    if (key == 'a') keyup = true; 
    if (key == 's') keyfast = true; 
+   if(key == 'g') 
+   {
+     if(pantalla == 2)
+       saveFrame("line-######.png");
+   }
   if (key == CODED) {
     if (keyCode == UP) keyup = true; 
     if (keyCode == DOWN) keydown = true;
@@ -230,11 +237,33 @@ void paint()
   {
     println(mouseX, mouseY);
     if(contiene(mouseX, mouseY, "play"))
+    {
+      println("Entramos en play");
       pantalla = 1;
-    if(contiene(mouseX, mouseY, "options"))
+      changeWindow("normal");
+    }
+    if(contiene(mouseX, mouseY, "options")){
+      println("Entramos en options");
       pantalla = 2;
+      changeWindow("cam");
+      background(0);
+    }
     if(contiene(mouseX, mouseY, "exit"))
       exit();
+  }
+}
+
+void changeWindow(String type)
+{
+  if(type.equals("normal"))
+  {
+    frame.setSize(600, 240);
+    frame.setResizable(false);
+  }
+  else
+  {
+    frame.setResizable(true);
+    frame.setSize(640, 480);
   }
 }
 
