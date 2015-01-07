@@ -7,12 +7,16 @@ int PointsCounter = 0,LR =0,once=1,jumpon=0,jumptime=0,onejump=0, stime=0, i=0, 
 float x=100, y=140, speed=0,slow = 0, jump, g=670;
 int n=415, contador=0;
 
+boolean primeraVez = true;
+
 int savedTime, savedTimeObs, savedTimeJump;
 int totalTime = 50;
 int jumpTime = 2000;
 int obsTime = 1000;
 int esquinaPlayX, esquinaExitX, esquinaOptionsX;
 int esquinaPlayY, esquinaOptionsY, anchoBotones, altoBotones;
+
+float big, normal, litle;
 
 boolean dead = false;
 boolean bajando = false;
@@ -44,6 +48,7 @@ void setup()
    suelo = new boolean[44];
    initializeGround();
    background(250);
+   /*
    suelo[35]= false;
     suelo[36]= false;
     suelo[37]= false;
@@ -53,16 +58,28 @@ void setup()
     suelo[41]= false;
     suelo[42]= false;
     suelo[43]= false;
+    */
     savedTime = millis();
    
-   esquinaPlayX = 218;
-   esquinaPlayY = 280;
-   esquinaExitX = 484;
-   esquinaOptionsX = 45;
-   esquinaOptionsY = 280;
    
-   anchoBotones = 148;
-   altoBotones = 52;
+   setupVariables();
+}
+
+void setupVariables()
+{
+  esquinaPlayX = 218;
+  esquinaPlayY = 280;
+  esquinaExitX = 484;
+  esquinaOptionsX = 45;
+  esquinaOptionsY = 280;
+   
+  anchoBotones = 148;
+  altoBotones = 52;
+  
+  big = 15;
+  normal = 10;
+  litle = 5;
+   
 }
 
 void draw()
@@ -95,6 +112,8 @@ void pantallaPrincipal()
   image(principal, 0, 0);
 }
 
+
+
 void paintGame()
 {
   paint();
@@ -112,6 +131,8 @@ void paintGame()
     savedTimeObs = millis();
   }
   drawGround();
+  
+  
 }
 
 void moveGround()
@@ -207,7 +228,7 @@ void paint()
   }
   else if((suelo[7] == true && dead == false))
   {
-    println("camina");
+    //println("camina");
     image(walkr, x, y);
   }
   else
@@ -260,8 +281,10 @@ void paint()
     if(contiene(mouseX, mouseY, "play"))
     {
       println("Entramos en play");
+      setupCapturarSonido();
       pantalla = 1;
       changeWindow("normal");
+      thread("jumpSize");
     }
     if(contiene(mouseX, mouseY, "options")){
       println("Entramos en options");
