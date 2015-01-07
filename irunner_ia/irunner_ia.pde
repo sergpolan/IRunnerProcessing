@@ -2,7 +2,7 @@ import gifAnimation.*;
 import processing.video.*;
 
 
-PImage bg, ground, ground2;
+PImage bg, ground, ground2, principal;
 PImage pjWalk;
 int PointsCounter = 0,LR =0,once=1,jumpon=0,jumptime=0,onejump=0, stime=0, i=0, j=0;
 float x=100, y=140, speed=0,slow = 0, jump, g=670;
@@ -12,6 +12,8 @@ int savedTime, savedTimeObs, savedTimeJump;
 int totalTime = 50;
 int jumpTime = 2000;
 int obsTime = 1000;
+int esquinaPlayX, esquinaExitX, esquinaOptionsX;
+int esquinaPlayY, esquinaOptionsY, anchoBotones, altoBotones;
 
 boolean dead = false;
 boolean bajando = false;
@@ -24,6 +26,8 @@ boolean keyfast = false;
 Gif walkr, background;
 boolean[] suelo;
 
+int pantalla = 0;
+
 void setup()
 {
   size(600,240);
@@ -31,6 +35,7 @@ void setup()
    bg = loadImage("bg.png");
    ground = loadImage("groundL.jpg");
    ground2 = loadImage("ground2.png");
+   principal = loadImage("principal.png");
    walkr = new Gif(this, "p1.gif");
    walkr.play();
    background = new Gif(this, "background.gif");
@@ -40,23 +45,51 @@ void setup()
    initializeGround();
    background(250);
    suelo[35]= false;
-  suelo[36]= false;
-  suelo[37]= false;
-  suelo[38]= false;
-  suelo[39]= false;
-  suelo[40]= false;
-  suelo[41]= false;
-  suelo[42]= false;
-  suelo[43]= false;
-  savedTime = millis();
+    suelo[36]= false;
+    suelo[37]= false;
+    suelo[38]= false;
+    suelo[39]= false;
+    suelo[40]= false;
+    suelo[41]= false;
+    suelo[42]= false;
+    suelo[43]= false;
+    savedTime = millis();
    
+   esquinaPlayX = 218;
+   esquinaPlayY = 280;
+   esquinaExitX = 484;
+   esquinaOptionsX = 218;
+   esquinaOptionsY = 280;
+   
+   anchoBotones = 148;
+   altoBotones = 52;
 }
 
 void draw()
 {
-  paint(); 
-   int passedTime = millis() - savedTime;
-   int passedTimeObs = millis() - savedTimeObs;
+  switch(pantalla) {
+  case 0: 
+    pantallaPrincipal();
+    break;
+  case 1: 
+    paintGame();
+    break;
+  }
+}
+
+void pantallaPrincipal()
+{
+  
+  image(principal, 0, 0);
+}
+
+void paintGame()
+{
+  paint();
+  
+  int passedTime = millis() - savedTime;
+  int passedTimeObs = millis() - savedTimeObs;
+  
   if (passedTime > totalTime) {
   moveGround();
   savedTime = millis();
@@ -67,7 +100,6 @@ void draw()
     savedTimeObs = millis();
   }
   drawGround();
-  
 }
 
 void moveGround()
@@ -191,5 +223,37 @@ void paint()
     if (keyCode == DOWN) keydown = true;
 
   }
+ }
+  
+  void mouseClicked() {
+  if(pantalla == 0)
+  {
+    println(mouseX, mouseY);
+    if(contiene(mouseX, mouseY, "play"))
+      pantalla = 1;
+    if(contiene(mouseX, mouseY, "options"))
+      pantalla = 2;
+    if(contiene(mouseX, mouseY, "exit"))
+      exit();
+  }
 }
+
+public boolean contiene(int x, int y, String boton) {
+  
+  boolean pinchado = false;
+  if(boton.equals("play") && pantalla == 0){
+     pinchado = (esquinaPlayX <= x && x <= esquinaPlayX + anchoBotones) && 
+      (esquinaPlayY >= y && y <= esquinaPlayY + altoBotones);
+  }
+  else if(boton.equals("exit") && pantalla == 0){
+     pinchado = (esquinaExitX <= x && x <= esquinaExitX + anchoBotones) && 
+      (esquinaPlayY >= y && y <= esquinaPlayY + altoBotones);
+  }
+  else if(boton.equals("options") && pantalla == 0){
+     pinchado = (esquinaOptionsX <= x && x <= esquinaOptionsX + anchoBotones + 60) && 
+      (esquinaOptionsY >= y && y <= esquinaOptionsY + altoBotones);
+  }
+    return pinchado;
+  }
+
 
