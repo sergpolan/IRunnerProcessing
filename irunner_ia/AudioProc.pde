@@ -22,24 +22,21 @@ void jumpSize()
   println("entroooo");
   int passedTim = 0;
   float maximo = 0;
-  while(true){
-  for(int i = 0; i < in.bufferSize() - 1; i++)
+  while(true)
   {
-     passedTim = millis() - actualTim;
-    float actual = in.left.get(i);
-    if(actual > maximo){
-      maximo = actual;
-      println(maximo);
+    for(int i = 0; i < in.bufferSize() - 1; i++)
+    {
+       passedTim = millis() - actualTim;
+      float actual = in.left.get(i);
+      if(actual > maximo){
+        maximo = actual;
+      }
+      if(passedTim > refreshTim)
+       {
+         println(maximo);
+         maximo = 0;
+         actualTim = millis();
+       }
     }
   }
-}
-/*
-  if(maximo >= big)
-    println(15);
-  else if(maximo >= normal && maximo < big)
-    println(10);
-  else if(maximo >= litle && maximo < normal)
-    println(5);
-  else
-    println(0);*/
 }
