@@ -1,7 +1,7 @@
 import gifAnimation.*;
 import processing.video.*;
 
-PImage bg, ground, ground2, principal, textCapture;
+PImage bg, ground, ground2, principal, textCapture, repetir;
 PImage pjWalk;
 int PointsCounter = 0,LR =0,once=1,jumpon=0,jumptime=0,onejump=0, stime=0, i=0, j=0;
 float x=100, y=140, speed=0,slow = 0, jump, g=670;
@@ -25,17 +25,17 @@ boolean keyfast = false;
 Gif walkr, background;
 boolean[] suelo;
 
-int pantalla = 0;
+int pantalla = 0; // 0 = principal, 1 = jugar, 2 = camara, 3 = foto capturada
 
 void setup()
 {
   size(600,240);
 
-   bg = loadImage("bg.png");
    ground = loadImage("groundL.jpg");
    ground2 = loadImage("ground2.png");
    principal = loadImage("principal.png");
    textCapture = loadImage("captura.png");
+   repetir = loadImage("repetir.png");
    walkr = new Gif(this, "p1.gif");
    walkr.play();
    background = new Gif(this, "background.gif");
@@ -77,9 +77,18 @@ void draw()
   case 2:
     drawCamera();
     break;
+  case 3:
+    printCaptura();
+    break;
   }
 }
 
+void printCaptura()
+{
+  PImage face = loadImage("captura-1.png");
+  image(face, 0,0);
+  image(repetir, 20, 300);
+}
 
 void pantallaPrincipal()
 {
@@ -219,12 +228,23 @@ void paint()
  
  
  void keyPressed() {
+   if(pantalla == 3){
+     if(key == 'r')
+       pantalla = 2;
+     else{
+       changeWindow("normal");
+       pantalla = 0;
+     }
+   }
    if (key == 'a') keyup = true; 
    if (key == 's') keyfast = true; 
    if(key == 'g') 
    {
-     if(pantalla == 2)
+     if(pantalla == 2){
        saveFrame("captura-1.png");
+       pantalla = 3;
+       pararEjecucion();
+     }
    }
   if (key == CODED) {
     if (keyCode == UP) keyup = true; 

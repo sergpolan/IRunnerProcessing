@@ -2,7 +2,8 @@ import processing.video.*;
 
 Capture cam;
 boolean firstTime = true;
-
+int savedTim;
+int totalTim = 4000;
 
 void DoSetupCamera() {
 
@@ -18,22 +19,36 @@ void DoSetupCamera() {
     }
 
     cam = new Capture(this, cameras[0]);
-    cam.start();     
+    cam.start();   
+    savedTim = millis();  
   }      
 }
 
 void drawCamera() {
+  
+  
   if(firstTime)
    {
      DoSetupCamera();
      firstTime = false;
    }
    else{
+     int passedTim = millis() - savedTim;
+     
       if (cam.available() == true) {
         cam.read();
       }
       image(cam, 0, 0);
-      image(textCapture, 20, 330);
+      if (passedTim < totalTim) {
+        image(textCapture, 20, 330);
+      }
    }
+}
+
+void pararEjecucion()
+{
+  cam.stop();
+  background(0);
+  firstTime = true;
 }
 
