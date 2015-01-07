@@ -3,6 +3,7 @@ import processing.video.*;
 Capture cam;
 boolean firstTime = true;
 
+
 void DoSetupCamera() {
 
   String[] cameras = Capture.list();
@@ -32,6 +33,7 @@ void drawCamera() {
         cam.read();
       }
       image(cam, 0, 0);
+      image(textCapture, 20, 330);
    }
 }
 

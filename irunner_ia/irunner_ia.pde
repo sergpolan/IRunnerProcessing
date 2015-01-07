@@ -1,7 +1,7 @@
 import gifAnimation.*;
 import processing.video.*;
 
-PImage bg, ground, ground2, principal;
+PImage bg, ground, ground2, principal, textCapture;
 PImage pjWalk;
 int PointsCounter = 0,LR =0,once=1,jumpon=0,jumptime=0,onejump=0, stime=0, i=0, j=0;
 float x=100, y=140, speed=0,slow = 0, jump, g=670;
@@ -35,6 +35,7 @@ void setup()
    ground = loadImage("groundL.jpg");
    ground2 = loadImage("ground2.png");
    principal = loadImage("principal.png");
+   textCapture = loadImage("captura.png");
    walkr = new Gif(this, "p1.gif");
    walkr.play();
    background = new Gif(this, "background.gif");
@@ -223,7 +224,7 @@ void paint()
    if(key == 'g') 
    {
      if(pantalla == 2)
-       saveFrame("line-######.png");
+       saveFrame("captura-1.png");
    }
   if (key == CODED) {
     if (keyCode == UP) keyup = true; 
@@ -247,6 +248,7 @@ void paint()
       pantalla = 2;
       changeWindow("cam");
       background(0);
+      image(textCapture, 20, 330);
     }
     if(contiene(mouseX, mouseY, "exit"))
       exit();
@@ -263,7 +265,7 @@ void changeWindow(String type)
   else
   {
     frame.setResizable(true);
-    frame.setSize(640, 480);
+    frame.setSize(640, 440);
   }
 }
 
