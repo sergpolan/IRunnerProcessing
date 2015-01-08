@@ -2,7 +2,7 @@ import gifAnimation.*;
 import processing.video.*;
 
 PImage bg, ground, ground2, principal, textCapture, repetir;
-PImage pjWalk;
+PImage pjWalk, options;
 int PointsCounter = 0,LR =0,once=1,jumpon=0,jumptime=0,onejump=0, stime=0, i=0, j=0;
 float x=100, y=140, speed=0,slow = 0, jump, g=670;
 int n=415, contador=0;
@@ -13,8 +13,8 @@ int savedTime, savedTimeObs, savedTimeJump;
 int totalTime = 50;
 int jumpTime = 2000;
 int obsTime = 1000;
-int esquinaPlayX, esquinaExitX, esquinaOptionsX;
-int esquinaPlayY, esquinaOptionsY, anchoBotones, altoBotones;
+int esquinaPlayX, esquinaExitX, esquinaOptionsX, esquinaScreenX;
+int esquinaPlayY, esquinaOptionsY, esquinaScreenY, anchoBotones, altoBotones;
 
 float big, normal, litle;
 
@@ -29,7 +29,7 @@ boolean keyfast = false;
 Gif walkr, background;
 boolean[] suelo;
 
-int pantalla = 0; // 0 = principal, 1 = jugar, 2 = camara, 3 = foto capturada
+int pantalla = 0; // 0 = principal, 1 = jugar, 2 = camara, 3 = foto capturada, 4 = opciones
 
 void setup()
 {
@@ -40,6 +40,7 @@ void setup()
    principal = loadImage("principal.png");
    textCapture = loadImage("captura.png");
    repetir = loadImage("repetir.png");
+   options = loadImage("options.png");
    walkr = new Gif(this, "p1.gif");
    walkr.play();
    background = new Gif(this, "background.gif");
@@ -48,7 +49,7 @@ void setup()
    suelo = new boolean[44];
    initializeGround();
    background(250);
-   /*
+   
    suelo[35]= false;
     suelo[36]= false;
     suelo[37]= false;
@@ -58,7 +59,7 @@ void setup()
     suelo[41]= false;
     suelo[42]= false;
     suelo[43]= false;
-    */
+    
     savedTime = millis();
    
    
@@ -72,6 +73,8 @@ void setupVariables()
   esquinaExitX = 484;
   esquinaOptionsX = 45;
   esquinaOptionsY = 280;
+  esquinaScreenX = 66;
+  esquinaScreenY = 157;
    
   anchoBotones = 148;
   altoBotones = 52;
@@ -97,14 +100,25 @@ void draw()
   case 3:
     printCaptura();
     break;
+  case 4:
+    printOptions();
+    break;
   }
+}
+
+void printOptions()
+{
+  image(options, 0 , 0);
 }
 
 void printCaptura()
 {
+  
   PImage face = loadImage("captura-1.png");
   image(face, 0,0);
   image(repetir, 20, 300);
+  
+  //pruebaMask("captura-1.png");
 }
 
 void pantallaPrincipal()
@@ -253,8 +267,9 @@ void paint()
      if(key == 'r')
        pantalla = 2;
      else{
-       changeWindow("normal");
+       
        pantalla = 0;
+       changeWindow("normal");
      }
    }
    if (key == 'a') keyup = true; 
@@ -275,6 +290,7 @@ void paint()
  }
   
   void mouseClicked() {
+    print(mouseX, mouseY);
   if(pantalla == 0)
   {
     println(mouseX, mouseY);
@@ -286,15 +302,20 @@ void paint()
       changeWindow("normal");
       thread("jumpSize");
     }
-    if(contiene(mouseX, mouseY, "options")){
-      println("Entramos en options");
+    if(contiene(mouseX, mouseY, "exit"))
+      exit();
+    if(contiene(mouseX, mouseY, "options"))
+      pantalla = 4;
+  }
+  else if(pantalla == 4)
+  {
+    if(contiene(mouseX, mouseY, "camera")){
+      println("Entramos en camara");
       pantalla = 2;
       changeWindow("cam");
       background(0);
       image(textCapture, 20, 330);
     }
-    if(contiene(mouseX, mouseY, "exit"))
-      exit();
   }
 }
 
@@ -319,13 +340,17 @@ public boolean contiene(int x, int y, String boton) {
      pinchado = (esquinaPlayX <= x && x <= esquinaPlayX + anchoBotones) && 
       (esquinaPlayY >= y && y <= esquinaPlayY + altoBotones);
   }
-  else if(boton.equals("exit") && pantalla == 0){
+  else if(boton.equals("exit") && (pantalla == 0 || pantalla == 4)){
      pinchado = (esquinaExitX <= x && x <= esquinaExitX + anchoBotones) && 
       (esquinaPlayY >= y && y <= esquinaPlayY + altoBotones);
   }
   else if(boton.equals("options") && pantalla == 0){
      pinchado = (esquinaOptionsX <= x && x <= esquinaOptionsX + anchoBotones + 60) && 
       (esquinaOptionsY >= y && y <= esquinaOptionsY + altoBotones);
+  }
+  else if(boton.equals("camera") && pantalla == 4){
+     pinchado = (esquinaScreenX <= x && x <= esquinaScreenX + anchoBotones + 60) && 
+      (esquinaScreenY >= y && y <= esquinaScreenY + altoBotones);
   }
     return pinchado;
   }

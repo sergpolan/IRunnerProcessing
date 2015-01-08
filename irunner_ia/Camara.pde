@@ -4,9 +4,11 @@ Capture cam;
 boolean firstTime = true;
 int savedTim;
 int totalTim = 4000;
+PImage mascara;
 
 void DoSetupCamera() {
 
+  mascara = loadImage("mascara.png");
   String[] cameras = Capture.list();
  
   if (cameras.length == 0) {
@@ -33,12 +35,15 @@ void drawCamera() {
      firstTime = false;
    }
    else{
+     
      int passedTim = millis() - savedTim;
      
       if (cam.available() == true) {
         cam.read();
       }
-      image(cam, 0, 0);
+      //pruebaMask(cam);
+      image(cam,0,0);
+      image(mascara,0,0);
       if (passedTim < totalTim) {
         image(textCapture, 20, 330);
       }
@@ -50,5 +55,20 @@ void pararEjecucion()
   cam.stop();
   background(0);
   firstTime = true;
+}
+
+void pruebaMask(PImage img)
+{
+  PGraphics mask;
+  background(40);
+  mask = createGraphics(img.width, img.height);
+  mask.beginDraw();
+  mask.smooth();
+  mask.background(0);
+  mask.fill(255);
+  mask.ellipse(width/2, height/2, 250,250);
+  mask.endDraw();
+  img.mask(mask);
+  image(img,0,0);
 }
 
