@@ -4,7 +4,7 @@ Minim minim;
 AudioInput in;
 
 int actualTim;
-int refreshTim = 1000;
+int refreshTim = 500;
 
 void setupCapturarSonido()
 {

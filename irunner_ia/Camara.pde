@@ -14,16 +14,10 @@ void DoSetupCamera() {
   if (cameras.length == 0) {
     println("No hay camaras disponibles.");
     exit();
-  } else {
-    println("Camaras disponibles:");
-    for (int i = 0; i < cameras.length; i++) {
-      println(cameras[i]);
-    }
-
+  }
     cam = new Capture(this, cameras[0]);
     cam.start();   
-    savedTim = millis();  
-  }      
+    savedTim = millis();        
 }
 
 void drawCamera() {
