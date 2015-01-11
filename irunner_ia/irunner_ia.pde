@@ -4,18 +4,21 @@ import processing.video.*;
 PImage bg, ground, ground2, principal, textCapture, repetir, posicion, volver;
 PImage pjWalk, options, about, num1, num2, num3, reiniciar, submit;
 int i=0, j=0;
-float x=100, y=140, speed=0,slow = 0, jump, g=670;
+float x=100, y=140, jump; //140 para la pava
 int n=415, contador=0;
 
 boolean primeraVez, starting = true;
 boolean yVoice, yCamera, sonido;
 String namePlayer = "";
+int speed = 1;
+
+int passedTimeJump;
 
 int savedTime, savedTimeObs, savedTimeJump, savedTimeDead;
 int totalTime = 50;
 int totalTimeDead = 1000;
-int jumpTime = 2000;
-int obsTime = 1000;
+int jumpTime = 1000;
+int obsTime = 2500;
 int esquinaPlayX, esquinaExitX, esquinaOptionsX, esquinaScreenX, esquinaAboutX;
 int esquinaPlayY, esquinaOptionsY, esquinaScreenY, esquinaAboutY, anchoBotones, altoBotones;
 
@@ -29,7 +32,7 @@ boolean keyleft = false;
 boolean keydown = false;
 boolean keyuplook = false;
 boolean keyfast = false;
-Gif walkr, background;
+Gif walkr, background, muestra;
 boolean[] suelo;
 
 boolean clickEscribir = false;
@@ -42,15 +45,22 @@ int pantalla = 0; // 0 = principal, 1 = jugar, 2 = camara, 3 = foto capturada, 4
 String mejorPlayer;
 int mejorPuntuacion;
 boolean pScore = true;
+int pjShow = 0;
+int yCreeper = 152;
+int yGorrino = 140;
 
 void setup()
 {
   size(600,240);
   f = createFont("Arial",24,true);
    setupImagenes();
-   walkr = new Gif(this, "p1.gif");
+   walkr = new Gif(this, "img/p1.gif");
    walkr.play();
-   background = new Gif(this, "background.gif");
+   
+   muestra = new Gif(this, "img/p1.gif");
+   muestra.play();
+   
+   background = new Gif(this, "img/background.gif");
    background.play();
    
    suelo = new boolean[44];
@@ -123,14 +133,14 @@ void printPosicion()
   if(pScore)
   {
     if(contador == mejorPuntuacion && mejorPlayer.equals(namePlayer))
-       posicion = loadImage("mejorscore.png");
+       posicion = loadImage("img/mejorscore.png");
     else
-        posicion = loadImage("mejorar.png");
+        posicion = loadImage("img/mejorar.png");
     pScore = false;
   }
   background(0);
   scale(0.6);
-  image(loadImage("captura-1.png"), 200, 0);
+  image(loadImage("img/captura-1.png"), 200, 0);
   scale(1.6);
   image(posicion, 0, 250);
   image(volver, 500,0);
@@ -138,19 +148,19 @@ void printPosicion()
 
 void setupImagenes()
 {
-  ground = loadImage("groundL.jpg");
-   ground2 = loadImage("ground2.png");
-   principal = loadImage("principal.png");
-   textCapture = loadImage("captura.png");
-   repetir = loadImage("repetir.png");
-   options = loadImage("options.png");
-   about = loadImage("about.png");
-   num1 = loadImage("cuentaAtras1.png");
-   num2 = loadImage("cuentaAtras2.png");
-   num3 = loadImage("cuentaAtras3.png");
-   reiniciar = loadImage("restart.png");
-   submit = loadImage("score.png");
-   volver = loadImage("volver.png");
+  ground = loadImage("img/groundL.jpg");
+   ground2 = loadImage("img/ground2.png");
+   principal = loadImage("img/principal.png");
+   textCapture = loadImage("img/captura.png");
+   repetir = loadImage("img/repetir.png");
+   options = loadImage("img/options.png");
+   about = loadImage("img/about.png");
+   num1 = loadImage("img/cuentaAtras1.png");
+   num2 = loadImage("img/cuentaAtras2.png");
+   num3 = loadImage("img/cuentaAtras3.png");
+   reiniciar = loadImage("img/restart.png");
+   submit = loadImage("img/score.png");
+   volver = loadImage("img/volver.png");
 }
 
 void printRankear()
@@ -166,12 +176,42 @@ void printRankear()
 
 void crearObstaculoAleatorio()
 {
-  if(contador >400 && contador < 500)
+  if(contador < 1000)
   {
-    suelo[35]= false;
-    suelo[36]= false;
-    suelo[37]= false;
+    suelo[40]= false;
+    suelo[41]= false;
+    suelo[42]= false;
+    suelo[43]= false;
+  }
+  else if(contador > 1000 && contador < 1500)
+  {
+    suelo[39]= false;
+    suelo[40]= false;
+    suelo[41]= false;
+    suelo[42]= false;
+    suelo[43]= false;
+  }
+  else if(contador > 1500 && contador < 2500)
+  {
     suelo[38]= false;
+    suelo[39]= false;
+    suelo[40]= false;
+    suelo[41]= false;
+    suelo[42]= false;
+    suelo[43]= false;
+  }
+  else if (contador > 2500 && contador < 5000)
+  {
+    suelo[37]= false;
+    suelo[39]= false;
+    suelo[40]= false;
+    suelo[41]= false;
+    suelo[42]= false;
+    suelo[43]= false;
+  }
+  else
+  {
+     suelo[36]= false;
     suelo[39]= false;
     suelo[40]= false;
     suelo[41]= false;
@@ -192,6 +232,10 @@ void printAtras()
 void printOptions()
 {
   image(options, 0 , 0);
+  if(pjShow == 1)
+    image(muestra, 330, 105);
+  else
+    image(muestra, 320, 95);
 }
 
 void printAbout()
@@ -205,8 +249,6 @@ void printCaptura()
   PImage face = loadImage("captura-1.png");
   image(face, 0,0);
   image(repetir, 50, 300);
-  
-  //pruebaMask("captura-1.png");
 }
 
 void pantallaPrincipal()
@@ -224,12 +266,13 @@ void paintGame()
   int passedTimeObs = millis() - savedTimeObs;
   
   if (passedTime > totalTime) {
-  moveGround();
-  savedTime = millis();
+    moveGround();
+    savedTime = millis();
   }
   if(passedTimeObs > obsTime)
   {
     crearObstaculoAleatorio();
+    acelerarTiempo();
     savedTimeObs = millis();
   }
   if(!dead)
@@ -238,10 +281,20 @@ void paintGame()
   
 }
 
+void acelerarTiempo()
+{
+  if(contador > 500 && contador < 1500)
+    obsTime = 2000;
+  else if(contador < 3000)
+    obsTime = 1500;
+}
+
+
 void moveGround()
 {
   boolean[] aux = suelo;
-  for(i = 0; i < suelo.length; i++)
+  i = 0;
+  while(i < suelo.length)
   {
     if(i == 42)
     {
@@ -254,6 +307,7 @@ void moveGround()
     else{
     suelo[i] = suelo[i+1];
     }
+    i++;
   }
   
 }
@@ -269,6 +323,7 @@ void initializeGround()
 void drawGround()
 {
   int con = 0;
+  
   for(i=0;i<700;i+=velocidad)
   {
       if(suelo[con] == true)
@@ -279,21 +334,46 @@ void drawGround()
   }
 }
 
-void perder()
-{
-  //stop();
-}
-
  
 void paint()
 {
   image(background,0,0);
-  int passedTimeJump = millis() - savedTimeJump;
+   passedTimeJump = millis() - savedTimeJump;
   if(keyup == true)
   {
-    if(passedTimeJump < jumpTime && !bajando)
+    saltarJu(false);
+    image(walkr, x, y);
+  }
+  else if(/*(suelo[7] == true && dead == false)*/true)
+  {
+    image(walkr, x, y);
+  }
+  else
+  {
+    dead = true;
+    y= y+3;
+    image(walkr, x, y);
+    if(y > 250)
     {
-      y= y-2;
+     image(reiniciar, 0, 0);
+    }
+  }
+  if(!dead){
+    textSize(30);
+    text(contador++, width - (width/6), height/8);
+    color(255,255,0);
+  }
+  else
+  {
+    text(contador, width - (width/6), height/8);
+  }
+}
+ 
+ void saltarJu(boolean audio)
+ {
+   if(passedTimeJump < jumpTime && !bajando)
+    {
+      y= y-1;
     }
     if(passedTimeJump > jumpTime)
     {
@@ -312,40 +392,12 @@ void paint()
         bajando = false;
         savedTimeJump = millis();
       }
-    } 
-    image(walkr, x, y);
-  }
-  else if((suelo[7] == true && dead == false))
-  {
-    //println("camina");
-    image(walkr, x, y);
-  }
-  else
-  {
-
-    //println("MUERE");
-    dead = true;
-    y= y+3;
-    image(walkr, x, y);
-    if(y > 250)
-    {
-     perder(); 
-     image(reiniciar, 0, 0);
     }
-    //PARAR CRONOMETRO
-    //PONER PANTALLA DE PUNTUACIONES
-  }
-  if(!dead){
-    textSize(30);
-  text(contador++, width - (width/6), height/8);
-  color(255,255,0);
-  }
-  else
-  {
-    text(contador, width - (width/6), height/8);
-  }
-}
- 
+   
+   if(audio)
+    image(walkr, x, y);
+
+ }
  
  void keyPressed() {
    if(pantalla == 3){
@@ -393,6 +445,11 @@ void paint()
       println("Entramos en play");
      
       pantalla = 6;
+      walkr = muestra;
+      if(pjShow == 0)
+        y = yGorrino;
+      else
+        y = yCreeper;
       if(yVoice){
          setupCapturarSonido();
         thread("jumpSize");
@@ -418,16 +475,44 @@ void paint()
       background(0);
       image(textCapture, 20, 330);
     }
-    else if(contiene(mouseX, mouseY, "SonidoY"))
+    else if(contiene(mouseX, mouseY, "sonidoY"))
     {
       sonido = true;
       println(sonido);
     }
-    else if(contiene(mouseX, mouseY, "SonidoN"))
+    else if(contiene(mouseX, mouseY, "sonidoN"))
     {
       sonido = false;
       println(sonido);
     }
+    else if(contiene(mouseX, mouseY, "voiceSi"))
+    {
+      yVoice = true;
+      println(yVoice);
+    }
+    else if(contiene(mouseX, mouseY, "voiceNo"))
+    {
+      yVoice = false;
+      println(yVoice);
+    }
+    else if(contiene(mouseX, mouseY, "pjmenos") || contiene(mouseX, mouseY, "pjmas"))
+    {
+      if(pjShow == 0)
+      {
+        muestra = new Gif(this, "img/p2.gif");
+        pjShow = 1;
+      }
+      else{
+        muestra = new Gif(this, "img/p1.gif");
+        pjShow = 0;
+      }
+      muestra.play();
+    }
+    else if(contiene(mouseX, mouseY, "exit"))
+    {
+      pantalla = 0;
+    }
+    
   }
   else if(pantalla == 5)
   {
@@ -470,12 +555,6 @@ void paint()
     }
     else if(contiene(mouseX, mouseY, "chicken"))
     {
-      /*
-      pantalla = 0;
-      dead = false;
-      contador = 0;
-      x = 100;
-      y = 140;*/
       pantalla = 7;
     }
   }
@@ -564,6 +643,26 @@ public boolean contiene(int x, int y, String boton) {
   else if(boton.equals("volver") && pantalla == 8){
      pinchado = (475 <= x && x <= 475 + anchoBotones) && 
       (10 <= y && y <= 10 + altoBotones);
+  }
+  else if(boton.equals("pjmas") && pantalla == 4){
+     pinchado = (255 <= x && x <= 255 + anchoBotones/2) && 
+      (116 <= y && y <= 116 + (altoBotones-10));
+  }
+ else if(boton.equals("pjmenos") && pantalla == 4){
+     pinchado = (402 <= x && x <= 402 + anchoBotones/2) && 
+      (116 <= y && y <= 116 + (altoBotones-10));
+  }
+  else if(boton.equals("exit") && pantalla == 4){
+     pinchado = (506 <= x && x <= 506 + anchoBotones) && 
+      (204 <= y && y <= 204 + altoBotones);
+  }
+  else if(boton.equals("voiceNo") && pantalla == 4){
+     pinchado = (364 <= x && x <= 364 + anchoBotones/2) && 
+      (195 <= y && y <= 195 + (altoBotones-10));
+  }
+ else if(boton.equals("voiceSi") && pantalla == 4){
+     pinchado = (280 <= x && x <= 280 + anchoBotones/2) && 
+      (195 <= y && y <= 195 + (altoBotones-10));
   }
     return pinchado;
   }

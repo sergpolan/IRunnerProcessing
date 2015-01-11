@@ -10,7 +10,7 @@ void setupCapturarSonido()
 {
   
   minim = new Minim(this);
-  minim.debugOn();
+  minim.debugOff();
   
   in = minim.getLineIn(Minim.STEREO, 512);
   actualTim = millis();  
@@ -34,6 +34,10 @@ void jumpSize()
       if(passedTim > refreshTim)
        {
          println(maximo);
+         if(maximo > 0.3)
+         {
+           keyup = true;
+         }
          maximo = 0;
          actualTim = millis();
        }

@@ -8,7 +8,7 @@ PImage mascara;
 
 void DoSetupCamera() {
 
-  mascara = loadImage("mascara.png");
+  mascara = loadImage("img/mascara.png");
   String[] cameras = Capture.list();
  
   if (cameras.length == 0) {
@@ -35,7 +35,6 @@ void drawCamera() {
       if (cam.available() == true) {
         cam.read();
       }
-      //pruebaMask(cam);
       image(cam,0,0);
       image(mascara,0,0);
       if (passedTim < totalTim) {
@@ -51,18 +50,4 @@ void pararEjecucion()
   firstTime = true;
 }
 
-void pruebaMask(PImage img)
-{
-  PGraphics mask;
-  background(40);
-  mask = createGraphics(img.width, img.height);
-  mask.beginDraw();
-  mask.smooth();
-  mask.background(0);
-  mask.fill(255);
-  mask.ellipse(width/2, height/2, 250,250);
-  mask.endDraw();
-  img.mask(mask);
-  image(img,0,0);
-}
 
