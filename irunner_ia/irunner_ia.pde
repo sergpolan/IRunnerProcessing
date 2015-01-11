@@ -1,15 +1,15 @@
 import gifAnimation.*;
 import processing.video.*;
 
-PImage bg, ground, ground2, principal, textCapture, repetir;
+PImage bg, ground, ground2, principal, textCapture, repetir, posicion, volver;
 PImage pjWalk, options, about, num1, num2, num3, reiniciar, submit;
-int PointsCounter = 0,LR =0,once=1,jumpon=0,jumptime=0,onejump=0, stime=0, i=0, j=0;
+int i=0, j=0;
 float x=100, y=140, speed=0,slow = 0, jump, g=670;
 int n=415, contador=0;
 
 boolean primeraVez, starting = true;
 boolean yVoice, yCamera, sonido;
-String namePlayer;
+String namePlayer = "";
 
 int savedTime, savedTimeObs, savedTimeJump, savedTimeDead;
 int totalTime = 50;
@@ -38,6 +38,10 @@ PFont f;
 String typing = "";
 int velocidad = 16;
 int pantalla = 0; // 0 = principal, 1 = jugar, 2 = camara, 3 = foto capturada, 4 = opciones, 5 = about, 6 = cuenta atras, 7 = name
+
+String mejorPlayer;
+int mejorPuntuacion;
+boolean pScore = true;
 
 void setup()
 {
@@ -107,7 +111,29 @@ void draw()
   case 7:
     printRankear();
     break;
+  case 8:
+    printPosicion();
+    break;
   }
+}
+
+void printPosicion()
+{
+  
+  if(pScore)
+  {
+    if(contador == mejorPuntuacion && mejorPlayer.equals(namePlayer))
+       posicion = loadImage("mejorscore.png");
+    else
+        posicion = loadImage("mejorar.png");
+    pScore = false;
+  }
+  background(0);
+  scale(0.6);
+  image(loadImage("captura-1.png"), 200, 0);
+  scale(1.6);
+  image(posicion, 0, 250);
+  image(volver, 500,0);
 }
 
 void setupImagenes()
@@ -124,6 +150,7 @@ void setupImagenes()
    num3 = loadImage("cuentaAtras3.png");
    reiniciar = loadImage("restart.png");
    submit = loadImage("score.png");
+   volver = loadImage("volver.png");
 }
 
 void printRankear()
@@ -177,7 +204,7 @@ void printCaptura()
   
   PImage face = loadImage("captura-1.png");
   image(face, 0,0);
-  image(repetir, 20, 300);
+  image(repetir, 50, 300);
   
   //pruebaMask("captura-1.png");
 }
@@ -337,6 +364,7 @@ void paint()
        else{
          clickEscribir = false;
          namePlayer = typing;
+       }
      }
    }
    if (key == 'a') keyup = true; 
@@ -344,10 +372,7 @@ void paint()
    if(key == 'g') 
    {
      if(pantalla == 2){
-       if(namePlayer.equals(""))
-         saveFrame("captura-1.png");
-       else
-         saveFrame(namePlayer + ".png");
+       saveFrame("captura-1.png");
        pantalla = 3;
        pararEjecucion();
      }
@@ -357,7 +382,6 @@ void paint()
     if (keyCode == DOWN) keydown = true;
 
   }
- }
  }
   
   void mouseClicked() {
@@ -426,6 +450,13 @@ void paint()
   {
     if(contiene(mouseX, mouseY, "name"))
       clickEscribir = true;
+    else if(contador > mejorPuntuacion)
+    {
+      changeWindow("cam");
+      mejorPlayer = namePlayer;
+      mejorPuntuacion = contador;
+      pantalla = 8;   
+    }
   }
   else if(pantalla == 1 && dead == true)
   {
@@ -448,6 +479,14 @@ void paint()
       pantalla = 7;
     }
   }
+  else if(pantalla == 8 && contiene(mouseX, mouseY, "volver"))
+  {
+    clear();
+    changeWindow("normal");
+    pantalla = 0;
+    pScore = true;
+    
+  }
 }
 
 void changeWindow(String type)
@@ -456,8 +495,7 @@ void changeWindow(String type)
   {
     width = 612;
     height = 278;
-    frame.setSize(width, height);
-    
+    frame.setSize(width, height); 
   }
   else
   {
@@ -518,6 +556,14 @@ public boolean contiene(int x, int y, String boton) {
   else if(boton.equals("name") && pantalla == 7){
      pinchado = (306 <= x && x <= 306 + anchoBotones) && 
       (125 <= y && y <= 126 + altoBotones);
+  }
+  else if(boton.equals("ranking") && pantalla == 7){
+     pinchado = (374 <= x && x <= 374 + anchoBotones) && 
+      (194 <= y && y <= 194 + altoBotones);
+  }
+  else if(boton.equals("volver") && pantalla == 8){
+     pinchado = (475 <= x && x <= 475 + anchoBotones) && 
+      (10 <= y && y <= 10 + altoBotones);
   }
     return pinchado;
   }
